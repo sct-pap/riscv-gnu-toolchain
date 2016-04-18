@@ -2151,6 +2151,7 @@ riscv_get_arg_info (struct riscv_arg_info *info, const CUMULATIVE_ARGS *cum,
      floating-point registers, as long as this is a named rather
      than a variable argument.  */
   info->fpr_p = (named
+		 && TARGET_HARD_FLOAT_ABI
 		 && (type == 0 || FLOAT_TYPE_P (type))
 		 && (GET_MODE_CLASS (mode) == MODE_FLOAT
 		     || GET_MODE_CLASS (mode) == MODE_COMPLEX_FLOAT
@@ -2229,7 +2230,7 @@ riscv_function_arg (cumulative_args_t cum_v, enum machine_mode mode,
   /* The n32 and n64 ABIs say that if any 64-bit chunk of the structure
      contains a double in its entirety, then that 64-bit chunk is passed
      in a floating-point register.  */
-  if (TARGET_HARD_FLOAT
+  if (TARGET_HARD_FLOAT_ABI
       && named
       && type != 0
       && TREE_CODE (type) == RECORD_TYPE
@@ -2321,7 +2322,7 @@ riscv_function_arg (cumulative_args_t cum_v, enum machine_mode mode,
 	}
     }
 
-  return gen_rtx_REG (mode, riscv_arg_regno (&info, TARGET_HARD_FLOAT));
+  return gen_rtx_REG (mode, riscv_arg_regno (&info, TARGET_HARD_FLOAT_ABI));
 }
 
 /* Implement TARGET_FUNCTION_ARG_ADVANCE.  */
@@ -2402,7 +2403,7 @@ riscv_return_mode_in_fpr_p (enum machine_mode mode)
   return ((GET_MODE_CLASS (mode) == MODE_FLOAT
 	   || GET_MODE_CLASS (mode) == MODE_VECTOR_FLOAT
 	   || GET_MODE_CLASS (mode) == MODE_COMPLEX_FLOAT)
-	  && GET_MODE_UNIT_SIZE (mode) <= UNITS_PER_HWFPVALUE);
+	  && GET_MODE_UNIT_SIZE (mode) <= UNITS_PER_FPVALUE);
 }
 
 /* Return the representation of an FPR return register when the
@@ -3141,7 +3142,7 @@ riscv_compute_frame_info (void)
 
   /* Find out which FPRs we need to save.  This loop must iterate over
      the same space as its companion in riscv_for_each_saved_reg.  */
-  if (TARGET_HARD_FLOAT)
+  if (TARGET_HARD_FLOAT_ABI)
     for (regno = FP_REG_FIRST; regno <= FP_REG_LAST; regno++)
       if (riscv_save_reg_p (regno))
         frame->fmask |= 1 << (regno - FP_REG_FIRST), num_f_saved++;
@@ -3156,7 +3157,7 @@ riscv_compute_frame_info (void)
   if (frame->fmask)
     {
       offset += RISCV_STACK_ALIGN (num_f_saved * UNITS_PER_FPREG);
-      frame->fp_sp_offset = offset - UNITS_PER_HWFPVALUE;
+      frame->fp_sp_offset = offset - UNITS_PER_FPVALUE;
     }
   /* Next are the callee-saved GPRs. */
   if (frame->mask)

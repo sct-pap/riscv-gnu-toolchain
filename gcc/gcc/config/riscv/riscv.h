@@ -19,13 +19,6 @@ You should have received a copy of the GNU General Public License
 along with GCC; see the file COPYING3.  If not see
 <http://www.gnu.org/licenses/>.  */
 
-/* TARGET_HARD_FLOAT and TARGET_SOFT_FLOAT reflect whether the FPU is
-   directly accessible, while the command-line options select
-   TARGET_HARD_FLOAT_ABI and TARGET_SOFT_FLOAT_ABI to reflect the ABI
-   in use.  */
-#define TARGET_HARD_FLOAT TARGET_HARD_FLOAT_ABI
-#define TARGET_SOFT_FLOAT TARGET_SOFT_FLOAT_ABI
-
 /* Target CPU builtins.  */
 #define TARGET_CPU_CPP_BUILTINS()					\
   do									\
@@ -188,6 +181,8 @@ along with GCC; see the file COPYING3.  If not see
 
 #define TARGET_DEFAULT_CMODEL CM_MEDLOW
 
+#define TARGET_HARD_FLOAT TARGET_SINGLE_FLOAT
+
 /* By default, turn on GDB extensions.  */
 #define DEFAULT_GDB_EXTENSIONS 1
 
@@ -231,19 +226,12 @@ along with GCC; see the file COPYING3.  If not see
 #define MIN_UNITS_PER_WORD 4
 #endif
 
-/* We currently require both or neither of the `F' and `D' extensions. */
-#define UNITS_PER_FPREG 8
+/* No support for the `Q' extension yet.  */
+#define UNITS_PER_FPREG (TARGET_DOUBLE_FLOAT ? 8 : 4)
 
-/* The largest size of value that can be held in floating-point
-   registers and moved with a single instruction.  */
-#define UNITS_PER_HWFPVALUE \
-  (TARGET_SOFT_FLOAT_ABI ? 0 : UNITS_PER_FPREG)
-
-/* The largest size of value that can be held in floating-point
-   registers.  */
-#define UNITS_PER_FPVALUE			\
-  (TARGET_SOFT_FLOAT_ABI ? 0			\
-   : LONG_DOUBLE_TYPE_SIZE / BITS_PER_UNIT)
+/* The largest size of value that can be held in floating-point registers.  */
+#define UNITS_PER_FPVALUE \
+  (TARGET_HARD_FLOAT_ABI ? UNITS_PER_FPREG : 0)
 
 /* The number of bytes in a double.  */
 #define UNITS_PER_DOUBLE (TYPE_PRECISION (double_type_node) / BITS_PER_UNIT)
@@ -671,7 +659,7 @@ enum reg_class
    point values.  */
 
 #define GP_RETURN GP_ARG_FIRST
-#define FP_RETURN ((TARGET_SOFT_FLOAT) ? GP_RETURN : FP_ARG_FIRST)
+#define FP_RETURN (TARGET_HARD_FLOAT_ABI ? FP_ARG_FIRST : GP_RETURN)
 
 #define MAX_ARGS_IN_REGISTERS 8
 

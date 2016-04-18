@@ -34,52 +34,52 @@ riscv_parse_arch_string (const char *isa, int *flags)
 {
   const char *p = isa;
 
-  if (strncmp (p, "RV32", 4) == 0)
+  if (strncasecmp (p, "RV32", 4) == 0)
     *flags |= MASK_32BIT, p += 4;
-  else if (strncmp (p, "RV64", 4) == 0)
+  else if (strncasecmp (p, "RV64", 4) == 0)
     *flags &= ~MASK_32BIT, p += 4;
 
-  if (*p++ != 'I')
+  if (TOUPPER (*p++) != 'I')
     {
       error ("-march=%s: ISA strings must begin with I, RV32I, or RV64I", isa);
       return;
     }
 
   *flags &= ~MASK_MULDIV;
-  if (*p == 'M')
+  if (TOUPPER (*p) == 'M')
     *flags |= MASK_MULDIV, p++;
 
   *flags &= ~MASK_ATOMIC;
-  if (*p == 'A')
+  if (TOUPPER (*p) == 'A')
     *flags |= MASK_ATOMIC, p++;
 
-  *flags |= MASK_SOFT_FLOAT_ABI;
-  if (*p == 'F')
-    *flags &= ~MASK_SOFT_FLOAT_ABI, p++;
+  *flags &= ~MASK_SINGLE_FLOAT;
+  if (TOUPPER (*p) == 'F')
+    *flags |= MASK_SINGLE_FLOAT, p++;
 
-  if (*p == 'D')
+  *flags &= ~MASK_DOUBLE_FLOAT;
+  if (TOUPPER (*p) == 'D')
+    *flags |= MASK_DOUBLE_FLOAT, p++;
+
+  *flags &= ~MASK_RVC;
+  if (TOUPPER (*p) == 'C')
+    *flags |= MASK_RVC, p++;
+
+  *flags |= MASK_SOFT_FLOAT_ABI;
+  if (*flags & MASK_DOUBLE_FLOAT)
     {
-      p++;
-      if (!TARGET_HARD_FLOAT)
+      *flags &= ~MASK_SOFT_FLOAT_ABI;
+
+      if (!(*flags & MASK_SINGLE_FLOAT))
 	{
 	  error ("-march=%s: the D extension requires the F extension", isa);
 	  return;
 	}
     }
-  else if (TARGET_HARD_FLOAT)
-    {
-      error ("-march=%s: single-precision-only is not yet supported", isa);
-      return;
-    }
-
-  *flags &= ~MASK_RVC;
-  if (*p == 'C')
-    *flags |= MASK_RVC, p++;
 
   /* FIXME: For now we just stop parsing when faced with a
-     non-standard RISC-V ISA extension, partially becauses of a
-     problem with the naming scheme. */
-  if (*p == 'X')
+     non-standard RISC-V ISA extension.  */
+  if (TOUPPER (*p) == 'X')
     return;
 
   if (*p)

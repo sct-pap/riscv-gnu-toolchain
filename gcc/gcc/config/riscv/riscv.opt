@@ -74,6 +74,14 @@ mmuldiv
 Target Report Mask(MULDIV)
 Use hardware instructions for integer multiplication and division.
 
+msingle-float
+Target Report Mask(SINGLE_FLOAT)
+Use hardware instructions for single-precision floating-point
+
+mdouble-float
+Target Report Mask(DOUBLE_FLOAT)
+Use hardware instructions for double-precision floating-point
+
 mrvc
 Target Report Mask(RVC)
 Use compressed instruction encoding
