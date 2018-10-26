@@ -18,3 +18,7 @@
 	path = riscv-gcc
 	url = git@github.com:sifive/riscv-gcc.git
 	branch = sifive-gcc-8.1.0
+[submodule "riscv-gdb"]
+	path = riscv-gdb
+	url = git@github.com:sifive/riscv-fsf-gdb.git
+	branch = sifive-gdb-8.2.50
