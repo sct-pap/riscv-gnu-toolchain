@@ -8,21 +8,28 @@ TARGETS += newlib-rv32im-ilp32-medlow
 TARGETS += newlib-rv32iac-ilp32-medlow
 TARGETS += newlib-rv32imac-ilp32-medlow
 TARGETS += newlib-rv32imafc-ilp32f-medlow
+TARGETS += newlib-rv32imafdc-ilp32d-medlow
 TARGETS += newlib-rv64imac-lp64-medlow
+TARGETS += newlib-rv64imafc-lp64f-medlow
 TARGETS += newlib-rv64imafdc-lp64d-medlow
+
 TARGETS += linux-rv32imac-ilp32-medlow
 TARGETS += linux-rv32imafdc-ilp32-medlow
 TARGETS += linux-rv32imafdc-ilp32d-medlow
 TARGETS += linux-rv64imac-lp64-medlow
 TARGETS += linux-rv64imafdc-lp64-medlow
 TARGETS += linux-rv64imafdc-lp64d-medlow
+
 TARGETS += newlib-rv32i-ilp32-medany
 TARGETS += newlib-rv32im-ilp32-medany
 TARGETS += newlib-rv32iac-ilp32-medany
 TARGETS += newlib-rv32imac-ilp32-medany
 TARGETS += newlib-rv32imafc-ilp32f-medany
+TARGETS += newlib-rv32imafdc-ilp32d-medany
 TARGETS += newlib-rv64imac-lp64-medany
+TARGETS += newlib-rv64imafc-lp64f-medany
 TARGETS += newlib-rv64imafdc-lp64d-medany
+
 TARGETS += linux-rv32imac-ilp32-medany
 TARGETS += linux-rv32imafdc-ilp32-medany
 TARGETS += linux-rv32imafdc-ilp32d-medany
