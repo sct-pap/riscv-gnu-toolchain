@@ -176,7 +176,7 @@ stamps/build-binutils-linux: $(srcdir)/riscv-binutils
 		--disable-libdecnumber \
 		--disable-libreadline
 	$(MAKE) -C $(notdir $@)
-	$(MAKE) -C $(notdir $@) install
+	$(MAKE) -C $(notdir $@) install install-pdf install-html
 	mkdir -p $(dir $@) && touch $@
 
 stamps/build-gdb-linux: $(srcdir)/riscv-gdb
@@ -200,7 +200,7 @@ stamps/build-gdb-linux: $(srcdir)/riscv-gdb
 		--disable-gold \
 		--disable-gprof
 	$(MAKE) -C $(notdir $@)
-	$(MAKE) -C $(notdir $@) install
+	$(MAKE) -C $(notdir $@) install install-pdf install-html
 	mkdir -p $(dir $@) && touch $@
 
 stamps/build-linux-headers:
@@ -253,6 +253,13 @@ endif
 		$($@_LIBDIROPTS)
 	$(MAKE) -C $(notdir $@)
 	+flock $(SYSROOT)/.lock $(MAKE) -C $(notdir $@) install install_root=$(SYSROOT)
+# Glibc doesn't have install-pdf and install-html rules.  Just build them
+# for now.
+# TODO: Rewrite so that they get installed.  Install will require flock.
+# These install multiple copies of the same docs into the same destination
+# for a multilib build, if they actually installed.
+# TODO: Rewrite so that we only install one copy of the docs.
+	$(MAKE) -C $(notdir $@) pdf html
 	mkdir -p $(dir $@) && touch $@
 
 stamps/build-gcc-linux-stage1: $(srcdir)/riscv-gcc stamps/build-binutils-linux \
@@ -318,7 +325,7 @@ stamps/build-gcc-linux-stage2: $(srcdir)/riscv-gcc $(addprefix stamps/build-glib
 		CFLAGS_FOR_TARGET="-O2 $(CFLAGS_FOR_TARGET)" \
 		CXXFLAGS_FOR_TARGET="-O2 $(CXXFLAGS_FOR_TARGET)"
 	$(MAKE) -C $(notdir $@)
-	$(MAKE) -C $(notdir $@) install
+	$(MAKE) -C $(notdir $@) install install-pdf install-html
 	cp -a $(INSTALL_DIR)/$(LINUX_TUPLE)/lib* $(SYSROOT)
 	mkdir -p $(dir $@) && touch $@
 
@@ -340,7 +347,7 @@ stamps/build-binutils-linux-native: $(srcdir)/riscv-binutils stamps/build-gcc-li
 		--disable-libdecnumber \
 		--disable-libreadline
 	$(MAKE) -C $(notdir $@)
-	$(MAKE) -C $(notdir $@) install
+	$(MAKE) -C $(notdir $@) install install-pdf install-html
 	mkdir -p $(dir $@) && touch $@
 
 stamps/build-gcc-linux-native: $(srcdir)/riscv-gcc stamps/build-gcc-linux-stage2 stamps/build-binutils-linux-native
@@ -367,7 +374,7 @@ stamps/build-gcc-linux-native: $(srcdir)/riscv-gcc stamps/build-gcc-linux-stage2
 		$(WITH_ABI) \
 		$(WITH_ARCH)
 	$(MAKE) -C $(notdir $@)
-	$(MAKE) -C $(notdir $@) install
+	$(MAKE) -C $(notdir $@) install install-pdf install-html
 	cp -a $(INSTALL_DIR)/$(LINUX_TUPLE)/lib* $(SYSROOT)
 	mkdir -p $(dir $@) && touch $@
 
@@ -387,7 +394,7 @@ stamps/build-binutils-newlib: $(srcdir)/riscv-binutils
 		--disable-libdecnumber \
 		--disable-libreadline
 	$(MAKE) -C $(notdir $@)
-	$(MAKE) -C $(notdir $@) install
+	$(MAKE) -C $(notdir $@) install install-pdf install-html
 	mkdir -p $(dir $@) && touch $@
 
 stamps/build-gdb-newlib: $(srcdir)/riscv-gdb
@@ -408,7 +415,7 @@ stamps/build-gdb-newlib: $(srcdir)/riscv-gdb
 		--disable-gold \
 		--disable-gprof
 	$(MAKE) -C $(notdir $@)
-	$(MAKE) -C $(notdir $@) install
+	$(MAKE) -C $(notdir $@) install install-pdf install-html
 	mkdir -p $(dir $@) && touch $@
 
 stamps/build-gcc-newlib-stage1: $(srcdir)/riscv-gcc stamps/build-binutils-newlib
@@ -456,6 +463,10 @@ stamps/build-newlib: $(srcdir)/riscv-newlib stamps/build-gcc-newlib-stage1
 		CXXFLAGS_FOR_TARGET="-Os $(CXXFLAGS_FOR_TARGET)"
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
+# These install multiple copies of the same docs into the same destination
+# for a multilib build.  So we must not parallelize them.
+# TODO: Rewrite so that we only install one copy of the docs.
+	$(MAKE) -j1 -C $(notdir $@) install-pdf install-html
 	mkdir -p $(dir $@) && touch $@
 
 stamps/build-newlib-nano: $(srcdir)/riscv-newlib stamps/build-gcc-newlib-stage1
@@ -538,7 +549,7 @@ stamps/build-gcc-newlib-stage2: $(srcdir)/riscv-gcc stamps/build-newlib \
 		CFLAGS_FOR_TARGET="-Os $(CFLAGS_FOR_TARGET)" \
 		CXXFLAGS_FOR_TARGET="-Os $(CXXFLAGS_FOR_TARGET)"
 	$(MAKE) -C $(notdir $@)
-	$(MAKE) -C $(notdir $@) install
+	$(MAKE) -C $(notdir $@) install install-pdf install-html
 	mkdir -p $(dir $@) && touch $@
 
 stamps/build-qemu: $(srcdir)/riscv-qemu
@@ -551,6 +562,10 @@ stamps/build-qemu: $(srcdir)/riscv-qemu
 		--python=python2
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
+# QEMU doesn't have install-pdf and install-html rules.  Just build them
+# for now.  QEMU isn't part of the toolchain, so this is a minor problem.
+# TODO: Rewrite so that they get installed.
+	$(MAKE) -C $(notdir $@) pdf html
 	mkdir -p $(dir $@)
 	date > $@
 
@@ -560,7 +575,7 @@ stamps/build-dejagnu: $(srcdir)/riscv-dejagnu
 	cd $(notdir $@) && $</configure \
 		--prefix=$(INSTALL_DIR)
 	$(MAKE) -C $(notdir $@)
-	$(MAKE) -C $(notdir $@) install
+	$(MAKE) -C $(notdir $@) install install-pdf install-html
 	mkdir -p $(dir $@)
 	date > $@
 
