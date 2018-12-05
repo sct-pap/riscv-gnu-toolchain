@@ -15,3 +15,11 @@
 	path = riscv-gcc
 	url = git://github.com/sifive/riscv-gcc.git
 	branch = sifive-gcc-8.1.0
+[submodule "riscv-binutils"]
+	path = riscv-binutils
+	url = git://github.com/sifive/riscv-binutils-gdb.git
+	branch = sifive-binutils-2.30
+[submodule "riscv-newlib"]
+	path = riscv-newlib
+	url = git://github.com/sifive/riscv-newlib.git
+	branch = sifive-newlib-3.0.0
