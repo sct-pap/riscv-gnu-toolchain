@@ -19,3 +19,7 @@
 	path = riscv-newlib
 	url = git://github.com/sifive/riscv-newlib.git
 	branch = sifive-newlib-3.0.0
+[submodule "riscv-gdb"]
+	path = riscv-gdb
+	url = git://sourceware.org/git/binutils-gdb.git
+	branch = master
