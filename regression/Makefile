@@ -13,6 +13,9 @@ TARGETS += newlib-rv64imac-lp64-medlow
 TARGETS += newlib-rv64imafc-lp64f-medlow
 TARGETS += newlib-rv64imafdc-lp64d-medlow
 
+TARGETS += newlib-rv32e-ilp32e-medlow
+TARGETS += newlib-rv32emac-ilp32e-medlow
+
 TARGETS += linux-rv32imac-ilp32-medlow
 TARGETS += linux-rv32imafdc-ilp32-medlow
 TARGETS += linux-rv32imafdc-ilp32d-medlow
@@ -29,6 +32,9 @@ TARGETS += newlib-rv32imafdc-ilp32d-medany
 TARGETS += newlib-rv64imac-lp64-medany
 TARGETS += newlib-rv64imafc-lp64f-medany
 TARGETS += newlib-rv64imafdc-lp64d-medany
+
+TARGETS += newlib-rv32e-ilp32e-medany
+TARGETS += newlib-rv32emac-ilp32e-medany
 
 TARGETS += linux-rv32imac-ilp32-medany
 TARGETS += linux-rv32imafdc-ilp32-medany
