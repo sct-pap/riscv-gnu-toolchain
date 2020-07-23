@@ -71,7 +71,7 @@ AC_ARG_WITH(tune,
 	[with_tune=rocket]
 	)
 
-AS_IF([test "x$with_abi" == xdefault],
+AS_IF([test "x$with_abi" = xdefault],
 	[AS_CASE([$with_arch],
 		[*rv64g* | *rv64*d*], [with_abi=lp64d],
 		[*rv64*f*], [with_abi=lp64f],
@@ -110,21 +110,36 @@ AC_ARG_ENABLE(gcc-checking,
         [AS_HELP_STRING([--enable-gcc-checking],
 		[Enable gcc internal checking, it will make gcc very slow, only enable it when developing gcc @<:@--disable-gcc-checking@:>@])],
         [],
-        [enable_gcc_checking=yes]
+        []
         )
-AS_IF([test "x$enable_gcc_checking" != xno],
-	[AC_SUBST(gcc_checking, --enable-checking=yes)],
-	[AC_SUBST(gcc_checking, --enable-checking=release)])
+AS_IF([test "x$enable_gcc_checking" != x],
+	[AC_SUBST(gcc_checking, --enable-checking=$enable_gcc_checking)],
+	[AC_SUBST(gcc_checking, "")])
 
 AC_ARG_WITH(cmodel,
 	[AS_HELP_STRING([--with-cmodel],
 		[Select the code model to use when building libc and libgcc @<:@--with-cmodel=medlow@:>@])],
 	[],
-	[enable_gcc_checking=yes]
+	[]
 	)
 AS_IF([test "x$with_cmodel" != x],
 	[AC_SUBST(cmodel, -mcmodel=$with_cmodel)],
 	[AC_SUBST(cmodel, -mcmodel=medlow)])
+
+AC_ARG_WITH(target_cflags,
+	[AS_HELP_STRING([--with-target-cflags],
+		[Add extra target flags for C for library code])],
+	[],
+	[]
+	)
+AC_SUBST(target_cflags, $with_target_cflags)
+AC_ARG_WITH(target_cxxflags,
+	[AS_HELP_STRING([--with-target-cxxflags],
+		[Add extra target flags for C++ for library code])],
+	[],
+	[]
+	)
+AC_SUBST(target_cxxflags, $with_target_cxxflags)
 
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([scripts/wrapper/awk/awk], [chmod +x scripts/wrapper/awk/awk])

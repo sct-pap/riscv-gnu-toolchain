@@ -26,15 +26,15 @@ Alternatively :
 Several standard packages are needed to build the toolchain.  On Ubuntu,
 executing the following command should suffice:
 
-    $ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
+    $ sudo apt-get install autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
 
 On Fedora/CentOS/RHEL OS, executing the following command should suffice:
 
-    $ sudo yum install autoconf automake libmpc-devel mpfr-devel gmp-devel gawk  bison flex texinfo patchutils gcc gcc-c++ zlib-devel expat-devel
+    $ sudo yum install autoconf automake python3 libmpc-devel mpfr-devel gmp-devel gawk  bison flex texinfo patchutils gcc gcc-c++ zlib-devel expat-devel
 
 On OS X, you can use [Homebrew](http://brew.sh) to install the dependencies:
 
-    $ brew install gawk gnu-sed gmp mpfr libmpc isl zlib expat
+    $ brew install python3 gawk gnu-sed gmp mpfr libmpc isl zlib expat
 
 To build the glibc (Linux) on OS X, you will need to build within a case-sensitive file
 system.  The simplest approach is to create and mount a new disk image with
@@ -101,6 +101,21 @@ using a different prefix for the second build, avoids the problem.  It
 is OK to build one newlib and one linux toolchain with the same prefix.
 But you should avoid building two newlib or two linux toolchains with
 the same prefix.
+
+If building a linux toolchain on a MacOS system, or on a Windows system
+using the Linux subsystem or cygwin, you must ensure that the filesystem
+is case-sensitive.  A build on a case-insensitive filesystem will fail when
+building glibc because \*.os and \*.oS files will clobber each other during
+the build eventually resulting in confusing link errors.
+
+Centos (and RHEL) provide old GNU tools versions that may be too old to build
+a RISC-V toolchain.  There is an alternate toolset provided that includes
+current versions of the GNU tools.  This is the devtoolset provided as part
+of the Software Collection service.  For more info, see the
+[devtoolset-7](https://www.softwarecollections.org/en/scls/rhscl/devtoolset-7/)
+URL.  There are various versions of the devtoolset that are available, so you
+can also try other versions of it, but we have at least one report that
+devtoolset-7 works.
 
 ### Advanced Options
 
